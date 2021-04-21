@@ -13,3 +13,13 @@ SIGIT - Simple Information Gathering Toolkit
 - ```dnsfinder``` - find host domain name system
 - ```riplookup``` - reverse ip lookup
 - ```iplocation``` - ip to location tracker
+
+### Setup
+- installation
+```bash
+apt-get install wget && wget https://raw.githubusercontent.com/termuxhackers-id/SIGIT/main/install.sh && bash install.sh
+```
+- uninstallation
+```bash
+rm -rf $PREFIX/bin/sigit
+```
