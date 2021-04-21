@@ -24,3 +24,5 @@ apt-get install wget && wget https://raw.githubusercontent.com/termuxhackers-id/
 ```bash
 rm -rf $PREFIX/bin/sigit
 ```
+### Credits
+Copyright © 2021 by <a href="https://facebook.com/termuxhackers.id">@termuxhackers.id</a>
