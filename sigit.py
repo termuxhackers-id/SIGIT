@@ -111,9 +111,8 @@ def iplocation():
     country = "COUNTRY: "+req["country"]
     loc = "LOC: "+req["loc"]
     org = "ORG: "+req["org"]
-    postal = "POSTAL: "+req["postal"]
     tz = "TIMEZONE: "+req["timezone"]
-    z = [ip, city, country, loc, org, postal, tz]
+    z = [ip, city, country, loc, org, tz]
     for res in z:
         print(f"{space}{b}-{w} {res}")
     print(w+lines)
