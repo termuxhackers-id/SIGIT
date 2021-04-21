@@ -423,7 +423,7 @@ class Facebook():
                 name = data["name"]
                 print(f"{space}{B} DONE {w} ID: {id} {r}->{w} {name}")
                 listid.append(data["id"])
-                f.write(id+"|"+RES['id']+"|"+name+"\n")
+                f.write(id+"|"+data['id']+"|"+name+"\n")
             except KeyboardInterrupt:
                 break
         f.close()
