@@ -107,7 +107,8 @@ def iplocation():
     print(w+lines)
     req = requests.get("https://ipinfo.io/"+x).json()
     ip = "IP: "+req["ip"]
-    city = "CITY: "+req["city"]
+    try: city = "CITY: "+req["city"]
+    except KeyError: city = ""
     country = "COUNTRY: "+req["country"]
     loc = "LOC: "+req["loc"]
     org = "ORG: "+req["org"]
