@@ -9,6 +9,7 @@ from email_validator import validate_email, EmailNotValidError
 from googlesearch import search
 from lxml.html import fromstring
 from getpass import getpass
+from shutil import which
 
 r = "\033[31m"
 g = "\033[32m"
