@@ -20,5 +20,5 @@ pip3 install email-validator
 echo -e $b">"$w" installing modules: "$g"googlesearch-python"$w
 pip3 install googlesearch-python
 echo -e $b">"$w" successfully installing dependencies"
-wget -q https://raw.githubusercontent.com/termuxhackers-id/SIGIT/main/sigit.py -O /usr/local/bin/sigit && chmod +x /usr/local/bin/sigit
+sudo wget -q https://raw.githubusercontent.com/termuxhackers-id/SIGIT/main/sigit.py -O /usr/local/bin/sigit && sudo chmod +x /usr/local/bin/sigit
 echo -e $b">"$w" use command "$g"sigit"$w" for start the console"
