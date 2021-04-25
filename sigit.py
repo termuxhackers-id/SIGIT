@@ -101,18 +101,24 @@ def mainmenu():
             exit(f"{r}\n{space}* Aborted !")
 
 def iplocation():
+    print(f"{space}{b}>{w} local IP: {os.popen('curl ifconfig.co --silent').readline().strip()}")
     x = str(input(f"{space}{b}>{w} enter IP:{b} "))
     if x.split(".")[0].isnumeric(): pass
     else: menu()
     print(w+lines)
-    req = requests.get("https://ipinfo.io/"+x).json()
-    ip = "IP: "+req["ip"]
+    req = requests.get("https://ipinfo.io/"+x+"/json").json()
+    try: ip = "IP: "+req["ip"]
+    except KeyError: ip = ""
     try: city = "CITY: "+req["city"]
     except KeyError: city = ""
-    country = "COUNTRY: "+req["country"]
-    loc = "LOC: "+req["loc"]
-    org = "ORG: "+req["org"]
-    tz = "TIMEZONE: "+req["timezone"]
+    try: country = "COUNTRY: "+req["country"]
+    except KeyError: country = ""
+    try: loc = "LOC: "+req["loc"]
+    except KeyError: loc = ""
+    try: org = "ORG: "+req["org"]
+    except KeyError: org = ""
+    try: tz = "TIMEZONE: "+req["timezone"]
+    except KeyError: tz = ""
     z = [ip, city, country, loc, org, tz]
     for res in z:
         print(f"{space}{b}-{w} {res}")
@@ -537,5 +543,16 @@ class Facebook():
         menu()
 
 if __name__ == "__main__":
+    arg = sys.argv
     fb = Facebook()
-    menu()
+    if len(arg) == 1: menu()
+    elif len(arg) == 2:
+        if arg[1] in ("update"):
+            if which("termux-setup-storage"): path = "$PREFIX/bin/sigit"
+            else:
+                if os.path.isdir("/usr/local/bin/"): path = "/usr/local/bin/sigit"
+                else: path = "/usr/bin/sigit"
+            os.system(f"wget https://raw.githubusercontent.com/termuxhackers-id/SIGIT/main/sigit.py -O {path} && chmod +x {path}")
+            print(f"{b}>{w} wrapper script have been updated")
+        else: exit(r+"* no command found for: "+str(arg[1:]).replace("[","").replace("]",""))
+    else: exit(r+"* no command found for: "+str(arg[1:]).replace("[","").replace("]",""))
