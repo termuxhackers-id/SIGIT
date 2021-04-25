@@ -17,17 +17,16 @@ SIGIT - Simple Information Gathering Toolkit
 - ```iplocation``` - ip to location tracker
 
 ### Setup
-- installation on termux
+- Installation on termux
 ```bash
 pkg install wget && wget https://raw.githubusercontent.com/termuxhackers-id/SIGIT/main/install.sh && bash install.sh
 ```
-- installation on kali linux
+- Installation on kali linux
 ```bash
 apt-get install wget && wget https://raw.githubusercontent.com/termuxhackers-id/SIGIT/main/installkali.sh && bash installkali.sh
 ```
-- uninstallation
-```bash
-rm -rf $PREFIX/bin/sigit
-```
+- Uninstallation
+- termux: ```rm -rf $PREFIX/bin/sigit```
+- kali  : ```rm -rf /usr/local/bin/sigit```
 ### Credits
 Copyright © 2021 by <a href="https://facebook.com/termuxhackers.id">@termuxhackers.id</a>
