@@ -28,5 +28,12 @@ apt-get install wget && wget https://raw.githubusercontent.com/termuxhackers-id/
 - Uninstallation
 - termux: ```rm -rf $PREFIX/bin/sigit```
 - kali  : ```rm -rf /usr/local/bin/sigit```
+
+### Tools Overview
+| Kali Linux | Termux Android	|
+| ------------  | ------------ |
+|![Index](https://raw.githubusercontent.com/termuxhackers-id/SIGIT/main/src/1.jpg)|![f](https://raw.githubusercontent.com/termuxhackers-id/SIGIT/main/src/2.jpg)|
+
+- <i>picture by [@androidmalware](https://instagram.com/androidmalware)</i>
 ### Credits
 Copyright © 2021 by <a href="https://facebook.com/termuxhackers.id">@termuxhackers.id</a>
