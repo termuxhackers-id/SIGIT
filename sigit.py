@@ -148,13 +148,20 @@ def phoneinfo():
     req = requests.get(url.format(no))
     res = json.loads(req.text)
     print(f"{space}{B} DONE {R} {no} {w}")
-    print(f"{space}{b}-{w} Type    : {y}{res['phone_type']}{w}")
-    print(f"{space}{b}-{w} Prefix  : {y}{res['country_prefix']}{w}")
-    print(f"{space}{b}-{w} Code    : {y}{res['country_code']}{w}")
-    print(f"{space}{b}-{w} Country : {y}{res['country']}{w}")
-    print(f"{space}{b}-{w} Global  : {y}{res['international_number']}{w}")
-    print(f"{space}{b}-{w} Local   : {y}{res['local_number']}{w}")
-    print(f"{space}{b}-{w} Provider: {y}{res['carrier']}{w}")
+    try: print(f"{space}{b}-{w} Type    : {y}{res['phone_type']}{w}")
+    except KeyError: pass
+    try: print(f"{space}{b}-{w} Prefix  : {y}{res['country_prefix']}{w}")
+    except KeyError: pass
+    try: print(f"{space}{b}-{w} Code    : {y}{res['country_code']}{w}")
+    except KeyError: pass
+    try: print(f"{space}{b}-{w} Country : {y}{res['country']}{w}")
+    except KeyError: pass
+    try: print(f"{space}{b}-{w} Global  : {y}{res['international_number']}{w}")
+    except KeyError: pass
+    try: print(f"{space}{b}-{w} Local   : {y}{res['local_number']}{w}")
+    except KeyError: pass
+    try: print(f"{space}{b}-{w} Provider: {y}{res['carrier']}{w}")
+    except KeyError: pass
     print(w+lines)
     getpass(space+"press enter for back to previous menu ")
     menu()
