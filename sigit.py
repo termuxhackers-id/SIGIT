@@ -441,8 +441,8 @@ class Facebook():
                 i += 1
                 REQ = requests.get(graph.format("/"+data["id"]+"?access_token="+token+"&limit=5000"),headers=headers)
                 RES = json.loads(REQ.text)
-                id = RES["id"]
-                name = RES["name"]
+                id = data["id"]
+                name = data["name"]
                 print(f"{space}{B} DONE {R} {str(i)} {w}")
                 print(f"{space}{b}-{w} Name: {name}")
                 print(f"{space}{b}-{w} ID: {id}")
