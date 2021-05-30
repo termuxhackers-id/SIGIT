@@ -443,8 +443,6 @@ class Facebook():
                 RES = json.loads(REQ.text)
                 id = RES["id"]
                 name = RES["name"]
-                if not id: continue
-                if not name: continue
                 print(f"{space}{B} DONE {R} {str(i)} {w}")
                 print(f"{space}{b}-{w} Name: {name}")
                 print(f"{space}{b}-{w} ID: {id}")
