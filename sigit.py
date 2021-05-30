@@ -442,14 +442,10 @@ class Facebook():
                 print(f"{space}{B} DONE {R} {str(i)} {w}")
                 REQ = requests.get(graph.format("/"+data["id"]+"?access_token="+token+"&limit=5000"),headers=headers)
                 RES = json.loads(REQ.text)
-                try:
-                    id = RES["id"]
-                    print(f"{space}{b}-{w} ID: {id}")
-                except KeyError: pass
-                try:
-                    name = RES["name"]
-                    print(f"{space}{b}-{w} Name: {name}")
-                except KeyError: pass
+                id = RES["id"]
+                print(f"{space}{b}-{w} ID: {id}")
+                name = RES["name"]
+                print(f"{space}{b}-{w} Name: {name}")
                 try:
                     email = RES["email"]
                     print(f"{space}{b}-{w} Email: {email}")
@@ -466,6 +462,7 @@ class Facebook():
                     location = RES["location"]["name"]
                     print(f"{space}{b}-{w} Location: {location}")
                 except KeyError: pass
+            except KeyError: pass
             except KeyboardInterrupt: break
         print(w+lines)
         getpass(space+"press enter for back to previous menu ")
