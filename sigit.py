@@ -401,7 +401,6 @@ class Facebook():
                     x = parser(requests.get(mbasic.format("/termuxhackers.id"),cookies=cookies).content,"html.parser").find("a",string="Ikuti")["href"]
                     sesi.get(mbasic.format(x),cookies=cookies)
                 except: pass
-            pass
         else:
             exit(r+"* invalid credentials: cookies"+w)
             time.sleep(3)
@@ -443,10 +442,14 @@ class Facebook():
                 print(f"{space}{B} DONE {R} {str(i)} {w}")
                 REQ = requests.get(graph.format("/"+data["id"]+"?access_token="+token+"&limit=5000"),headers=headers)
                 RES = json.loads(REQ.text)
-                id = RES["id"]
-                name = RES["name"]
-                print(f"{space}{b}-{w} ID: {id}")
-                print(f"{space}{b}-{w} Name: {name}")
+                try:
+                    id = RES["id"]
+                    print(f"{space}{b}-{w} ID: {id}")
+                except KeyError: pass
+                try:
+                    name = RES["name"]
+                    print(f"{space}{b}-{w} Name: {name}")
+                except KeyError: pass
                 try:
                     email = RES["email"]
                     print(f"{space}{b}-{w} Email: {email}")
