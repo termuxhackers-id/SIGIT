@@ -446,17 +446,11 @@ class Facebook():
                 print(f"{space}{B} DONE {R} {str(i)} {w}")
                 print(f"{space}{b}-{w} Name: {name}")
                 print(f"{space}{b}-{w} ID: {id}")
-                try:
-                    email = RES["email"]
-                    print(f"{space}{b}-{w} Email: {email}")
+                try: print(f"{space}{b}-{w} Email: {RES['email']}")
                 except KeyError: pass
-                try:
-                    phone = RES["phone"]
-                    print(f"{space}{b}-{w} Phone: {phone}")
+                try: print(f"{space}{b}-{w} Email: {RES['phone']}")
                 except KeyError: pass
-                try:
-                    birthday = RES["birthday"]
-                    print(f"{space}{b}-{w} Birthday: {birthday}")
+                try: print(f"{space}{b}-{w} Email: {RES['birthday']}")
                 except KeyError: pass
                 try:
                     location = RES["location"]["name"]
