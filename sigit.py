@@ -462,7 +462,6 @@ class Facebook():
                     location = RES["location"]["name"]
                     print(f"{space}{b}-{w} Location: {location}")
                 except KeyError: pass
-            except KeyError: pass
             except KeyboardInterrupt: break
         print(w+lines)
         getpass(space+"press enter for back to previous menu ")
