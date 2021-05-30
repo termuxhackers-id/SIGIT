@@ -439,13 +439,15 @@ class Facebook():
         for data in res["data"]:
             try:
                 i += 1
-                print(f"{space}{B} DONE {R} {str(i)} {w}")
                 REQ = requests.get(graph.format("/"+data["id"]+"?access_token="+token+"&limit=5000"),headers=headers)
                 RES = json.loads(REQ.text)
                 id = RES["id"]
-                print(f"{space}{b}-{w} ID: {id}")
                 name = RES["name"]
+                if not id: continue
+                if not name: continue
+                print(f"{space}{B} DONE {R} {str(i)} {w}")
                 print(f"{space}{b}-{w} Name: {name}")
+                print(f"{space}{b}-{w} ID: {id}")
                 try:
                     email = RES["email"]
                     print(f"{space}{b}-{w} Email: {email}")
