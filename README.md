@@ -1,4 +1,4 @@
-<img title="SIGIT" src="https://img.shields.io/badge/CODENAME%20-SIGIT-SCRIPT?colorA=grey&colorB=green&style=for-the-badge"> <img title="SIGIT" src="https://img.shields.io/badge/VERSION%20-1.0-SCRIPT?colorA=grey&colorB=green&style=for-the-badge"> 
+<img title="SIGIT" src="https://img.shields.io/badge/CODENAME%20-SIGIT-SCRIPT?colorA=grey&colorB=green&style=for-the-badge"> <img title="SIGIT" src="https://img.shields.io/badge/VERSION%20-2.0-SCRIPT?colorA=grey&colorB=green&style=for-the-badge"> 
 <img src="https://raw.githubusercontent.com/termuxhackers-id/SIGIT/main/src/Screenshot_2021-04-26_01-22-35.jpeg">
 SIGIT - Simple Information Gathering Toolkit
 
