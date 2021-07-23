@@ -1,4 +1,5 @@
-#! /usr/bin/bash
+#!/usr/bin/env bash
+# SIGIT 2.0
 null="> /dev/null 2>&1"
 g="\033[1;32m"
 r="\033[1;31m"

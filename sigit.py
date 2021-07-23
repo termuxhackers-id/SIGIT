@@ -2,12 +2,23 @@
 # Author by @termuxhackers.id
 # Support me with follow my facebook page https://fb.me/termuxhackers.id
 # Disclaimer: please dont re-edit or recode the original source code !
-# Last update: 21/04/2021 - version 1.0
+# Last update: Fri Jul 23 2021 - version 2.0
+# Update by Mr.nope
+# Mr.nope Github: https://github.com/mrprogrammer2938
 
 import os, re, sys, time, json, requests, textwrap, socket
-from email_validator import validate_email, EmailNotValidError
-from googlesearch import search
-from lxml.html import fromstring
+try:
+    from email_validator import validate_email, EmailNotValidError
+except ImporTError:
+    os.system("pip install email_validator")
+try:
+    from googlesearch import search
+except ImportError:
+    os.system("pip install googlesearch-python")
+try:
+    from lxml.html import fromstring
+except ImportError:
+    os.system("pip install lxml")
 from getpass import getpass
 from shutil import which
 
@@ -75,6 +86,7 @@ def menu():
         {w}{b}  10{w} DNSfinder    {d} Find host domain name system
         {w}{b}  11{w} RIPlookup    {d} Reverse IP lookup
         {w}{b}  12{w} IPlocation   {d} IP to location tracker
+        {w}{b}  99{w} Exit 
         """)
     mainmenu()
 
@@ -84,19 +96,34 @@ def mainmenu():
             cmd = str(input(f"{space}{w}{b}>{w} choose:{b} "))
             if int(len(cmd)) < 6:
                 if cmd in ("exit","Exit"): exit(r+space+"* Exiting !"+w)
-                elif cmd in ("1","01"): userrecon()
-                elif cmd in ("2","02"): fb.facedumper()
-                elif cmd in ("3","03"): mailfinder()
-                elif cmd in ("4","04"): godorker()
-                elif cmd in ("5","05"): phoneinfo()
-                elif cmd in ("6","06"): infoga("dnslookup")
-                elif cmd in ("7","07"): infoga("whois")
-                elif cmd in ("8","08"): infoga("subnetcalc")
-                elif cmd in ("9","09"): infoga("hostsearch")
-                elif cmd in ("10"): infoga("mtr")
-                elif cmd in ("11"): infoga("reverseiplookup")
-                elif cmd in ("12"): iplocation()
-                else: continue
+                elif cmd in ("1","01"):
+                    userrecon()
+                elif cmd in ("2","02"):
+                    fb.facedumper()
+                elif cmd in ("3","03"):
+                    mailfinder()
+                elif cmd in ("4","04"):
+                    godorker()
+                elif cmd in ("5","05"):
+                    phoneinfo()
+                elif cmd in ("6","06"):
+                    infoga("dnslookup")
+                elif cmd in ("7","07"):
+                    infoga("whois")
+                elif cmd in ("8","08"):
+                    infoga("subnetcalc")
+                elif cmd in ("9","09"):
+                    infoga("hostsearch")
+                elif cmd in ("10"):
+                    infoga("mtr")
+                elif cmd in ("11"):
+                    infoga("reverseiplookup")
+                elif cmd in ("12"):
+                    iplocation()
+                elif cmd in ("99"):
+                    ext()
+                else:
+                    continue
             else: continue
         except KeyboardInterrupt:
             exit(f"{r}\n{space}* Aborted !")
@@ -197,7 +224,9 @@ def godorker():
     print(f"{space}{b}>{w} {str(len(url))} retrieved as: {y}result_godorker.txt{w}")
     getpass(space+"press enter for back to previous menu ")
     menu()
-    
+def ext():
+    print(f"{B}Exiting...{w}")
+    sys.exit()
 def mailfinder():
     fullname = str(input(f"{space}{b}>{w} enter name:{b} ").lower())
     if not fullname: menu()
