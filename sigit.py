@@ -26,7 +26,7 @@ Y = f"{w}\033[1;43m"
 B = f"{w}\033[1;44m"
 
 home = os.getenv("HOME")
-cokifile = home + "/.cookies"
+cokifile = "/.cookies"
 space = "         "
 lines = space + "-"*44
 apihack = "https://api.hackertarget.com/{}/?q={}"
@@ -389,6 +389,7 @@ class Facebook():
                 if coki: break
                 else: continue
         cookies = {"cookie":coki}
+        sesi = requests.Session()
         req = requests.get(mbasic.format("/me",verify=False),cookies=cookies).content
         if "mbasic_logout_button" in str(req):
             if "Apa yang Anda pikirkan sekarang" in str(req):
