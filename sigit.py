@@ -393,9 +393,7 @@ class Facebook():
         req = requests.get(mbasic.format("/me",verify=False),cookies=cookies).content
         if "mbasic_logout_button" in str(req):
             if "Apa yang Anda pikirkan sekarang" in str(req):
-                with open(cokifile,"w") as f:
-                    f.write(cookies["cookie"])
-                f.close()
+                open(cokifile,"a").write(coki)
             else:
                 try:
                     requests.get(mbasic.format(parser(req,"html.parser").find("a",string="Bahasa Indonesia")["href"]),cookies=cookies)
