@@ -354,7 +354,7 @@ def userrecon():
             else: color = y
             print(f"  {space}{b}[{color}{req.status_code}{b}] {w}{url.format(username)}")
         except requests.exceptions.Timeout: continue
-        except requests.exceptions.TooManyRedirects: break
+        except requests.exceptions.TooManyRedirects: continue
         except requests.exceptions.ConnectionError: break
     print(w+lines)
     getpass(space+"press enter for back to previous menu ")
