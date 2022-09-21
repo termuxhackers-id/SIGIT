@@ -2,11 +2,11 @@
 # Author by @termuxhackers.id
 # Support me with follow my facebook page https://fb.me/termuxhackers.id
 # Disclaimer: please dont re-edit or recode the original source code !
-# Last update: 21/04/2021 - version 1.0
+# Last update: 21/09/2022 - version 1.0
 
 import os, re, sys, time, json, requests, textwrap, socket
 from email_validator import validate_email, EmailNotValidError
-from googlesearch.googlesearch import GoogleSearch
+from googlesearch import search
 from lxml.html import fromstring
 from getpass import getpass
 from shutil import which
