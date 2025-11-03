@@ -146,7 +146,7 @@
 └── sigit/
     ├── pyproject.toml     → Build config & dependencies
     ├── README.md          → Documentation
-    ├── main.py            → Entry point
+    ├── run.py             → Entry point
     ├── sigit/             → Source code
     │   ├── __init__.py
     │   ├── core/          → AsyncClient, Config, Colors
