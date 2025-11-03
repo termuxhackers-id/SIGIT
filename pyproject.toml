@@ -1,0 +1,28 @@
+[project]
+name = "sigit"
+version = "0.1.0"
+description = "Simple Information Gathering Toolkit"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+    { name = "termuxhackers-id", email = "termuxhackers.id@gmail.com" }
+]
+keywords = ["sigit", "osint", "username-checker", "reconnaissance", "security"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Security",
+]
+dependencies = [
+    "aiohttp>=3.13.2",
+    "asyncio>=4.0.0",
+    "email-validator>=2.3.0",
+    "googlesearch-python>=1.3.0",
+    "requests>=2.32.5",
+]
