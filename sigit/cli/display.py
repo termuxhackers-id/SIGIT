@@ -1,20 +1,17 @@
-import os
-
+import json
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
-from ..core.colors import Colors
-from ..core.config import config
-from ..core.base import ResultType, ServiceResult
+from rich.console import Console
+from rich.panel import Panel
+from rich.prompt import Confirm
+from rich.table import Table
 
-from tqdm import tqdm
-import time
-import asyncio
+from sigit.core.base import RenderType, ServiceResult
 
-c = Colors()
+console = Console()
 
-# Logo
-LOGO = f"""{c.BLUE}
+LOGO = """[bold blue]
                     _cyqyc_
                 :>3qKKKKKKKq3>:
             ';CpKKKKKKKKKKKKKKKKKpC;'
@@ -34,167 +31,103 @@ LOGO = f"""{c.BLUE}
 !KKKKKKKKKKKqC;-               -;CqKKKKKKKKKKK!
 <KKKKKKKKkr,                       ,rSKKKKKKKK<
 -"v]qj;-                             -;jq]v"-
-                {c.RESET}[ S.I.G.I.T ]{c.BLUE}
-    {c.DIM}Simple Information Gathering Toolkit{c.RESET}
-        {c.DIM}Author by {c.RESET}{c.RED}@termuxhackers.id{c.RESET}"""
+[/][bold white]                [ S.I.G.I.T ][/bold white]
+[dim blue]    Simple Information Gathering Toolkit[/dim blue]
+[dim]        Author by [/dim][bold red]@termuxhackers.id[/bold red]
+"""
 
 
 def clear() -> None:
-    os.system('clear' if os.name == 'posix' else 'cls')
+    console.clear()
 
 
-def separator() -> None:
-    print(f"{c.RESET}{config.SPACE}" + "-" * 44)
-
-
-def print_user_result(result: dict) -> None:
-    """Cleaner user reconnaissance result."""
-    status_color = result.get('color', c.RESET)
-    status_text = result.get('status', '???')
-    print(f"{config.SPACE}{c.BLUE}  ▸ {c.RESET}{result['url']:<40} {c.BLUE}[{status_color}{status_text}{c.BLUE}]{c.RESET}")
-
-
-def save_results(data: list | dict | str, filename: str) -> None:
-    """Write data to file."""
-    if isinstance(data, list):
-        text = "\n".join(map(str, data))
-    elif isinstance(data, dict):
-        lines = []
-        for k, v in data.items():
-            if isinstance(v, list):
-                for item in v:
-                    lines.append(f"{k}: {item}")
-            else:
-                lines.append(f"{k}: {v}")
-        text = "\n".join(lines)
-    else:
-        text = str(data)
-    Path(filename).write_text(text)
-    print(f"{config.SPACE}{c.BLUE}> {c.RESET}Results saved to: {c.YELLOW}{filename}{c.RESET}")
-
-
-def ask_save_results(result: 'ServiceResult', default_name: str) -> None:
-    """Ask the user whether to save results to a file."""
-    if not result.success or result.data is None:
-        return
-    try:
-        ans = input(
-            f"{config.SPACE}{c.BLUE}> {c.RESET}Save results? "
-            f"{c.DIM}(y/n){c.RESET} "
-        ).strip().lower()
-    except (EOFError, KeyboardInterrupt):
-        return
-    if ans in ('y', 'yes'):
-        filename = result.save_filename or default_name
-        save_results(result.data, filename)
+def print_logo() -> None:
+    console.print(LOGO)
 
 
 def print_header(title: str) -> None:
-    """Print a minimalist professional header."""
-    print(f"\n{config.SPACE}{c.BLUE}─── {c.RESET}{c.BOLD}{title.upper()}{c.BLUE} ───{c.RESET}")
+    console.print(f"\n[bold blue]───[/] [bold white]{title.upper()}[/] [bold blue]───[/]\n")
 
-
-def print_found(count: int, item: str = "results") -> None:
-    """Professional summary line."""
-    print(f"\n{config.SPACE}{c.BLUE}➤ {c.RESET}Total: {c.YELLOW}{count}{c.RESET} {item}")
-
-
-def show_progress(text: str = "Processing"):
-    """Simple indeterminate progress bar for tools."""
-    return tqdm(
-        total=100,
-        desc=f"{config.SPACE}{c.BLUE}{text}{c.RESET}",
-        bar_format="{desc}: {percentage:3.0f}%|{bar}|",
-        ncols=60,
-        leave=False
-    )
-
-
-def input_prompt(prompt: str) -> str:
-    """Professional input prompt."""
-    try:
-        return input(f"{config.SPACE}{c.BLUE}┌──({c.RESET}sigit{c.BLUE})─[{c.RESET}{prompt}{c.BLUE}]\n{config.SPACE}└─➤ {c.RESET}").strip()
-    except (KeyboardInterrupt, EOFError):
-        return ""
-
-
-# ---------------------------------------------------------------------------
-# Generic result renderer (registry-driven)
-# ---------------------------------------------------------------------------
 
 def render_result(result: ServiceResult) -> None:
-    """Render a :class:`ServiceResult` to the terminal based on its type."""
     if not result.success:
-        print(f"{config.SPACE}{c.RED}* {result.error}{c.RESET}")
+        console.print(f"\n[bold red]Error:[/] {result.error}\n")
         return
 
     data = result.data
+    if data is None:
+        console.print("[yellow]No data returned.[/yellow]")
+        return
 
-    if result.result_type == ResultType.KEY_VALUE:
-        _render_key_value(data)
-    elif result.result_type == ResultType.TABLE:
-        _render_table(data)
-    elif result.result_type == ResultType.LIST:
-        _render_list(data)
-    elif result.result_type == ResultType.TEXT:
-        _render_text(data)
-    elif result.result_type == ResultType.SCORED:
-        _render_scored(data)
+    if result.render_type == RenderType.TABLE and isinstance(data, list):
+        if not data:
+            console.print("[yellow]Empty result set.[/yellow]")
+            return
 
-    # Saving is now handled by ask_save_results() in the menu
+        if isinstance(data[0], dict):
+            table = Table(show_header=True, header_style="bold blue")
+            keys = list(data[0].keys())
+            for key in keys:
+                table.add_column(key.replace("_", " ").title())
 
+            for row in data:
+                table.add_row(*[str(row.get(k, "")) for k in keys])
 
-def _render_key_value(data: Dict[str, Any]) -> None:
-    for key, value in data.items():
-        if isinstance(value, list):
-            label = key.replace('_', ' ').title()
-            print(f"{config.SPACE}{c.BLUE}  ▸ {c.RESET}{label:15}:")
-            for item in value:
-                print(f"{config.SPACE}    {c.BLUE}◦ {c.RESET}{item}")
-        elif isinstance(value, dict):
-            print(f"{config.SPACE}{c.BLUE}{key}:{c.RESET}")
-            for k2, v2 in value.items():
-                print(f"{config.SPACE}  {c.DIM}{k2}:{c.RESET} {v2}")
+            console.print(table)
+            console.print(f"\n[dim blue]Total:[/] [yellow]{len(data)}[/] items")
         else:
-            label = key.replace('_', ' ').title()
-            print(f"{config.SPACE}{c.BLUE}  ▸ {c.RESET}{label:15}: {c.YELLOW}{value}{c.RESET}")
+            for item in data:
+                console.print(f" [blue]▸[/] {item}")
+            console.print(f"\n[dim blue]Total:[/] [yellow]{len(data)}[/] items")
 
+    elif result.render_type == RenderType.KEY_VALUE and isinstance(data, dict):
+        table = Table(show_header=False, box=None)
+        table.add_column("Key", style="bold blue", width=25)
+        table.add_column("Value", style="white")
 
-def _render_table(data: List[Dict[str, Any]]) -> None:
-    for row in data:
-        if 'color' in row and 'status' in row and 'url' in row:
-            # UserRecon-style result
-            print_user_result(row)
-        elif 'port' in row:
-            # PortScanner-style result
-            print(f"{config.SPACE}{c.BG_GREEN} OPEN {c.RESET} "
-                  f"Port {c.YELLOW}{row['port']}{c.RESET} - {row.get('service', '')}")
-        else:
-            parts = " | ".join(f"{k}: {v}" for k, v in row.items())
-            print(f"{config.SPACE}{c.BLUE}-{c.RESET} {parts}")
-    print_found(len(data))
+        for key, value in data.items():
+            label = key.replace("_", " ").title()
+            if isinstance(value, list):
+                val_str = "\n".join(f"• {item}" for item in value)
+            elif isinstance(value, dict):
+                val_str = "\n".join(f"{k}: {v}" for k, v in value.items())
+            else:
+                val_str = str(value)
+            table.add_row(label, val_str)
 
+        console.print(table)
 
-def _render_list(data: List[str]) -> None:
-    for item in data:
-        print(f"{config.SPACE}{c.BLUE}  ▸ {c.RESET}{item}")
-    print_found(len(data))
+    elif result.render_type == RenderType.LIST and isinstance(data, list):
+        for item in data:
+            console.print(f" [blue]▸[/] {item}")
+        console.print(f"\n[dim blue]Total:[/] [yellow]{len(data)}[/] items")
 
+    elif result.render_type == RenderType.TEXT:
+        console.print(Panel(str(data), border_style="dim blue"))
 
-def _render_text(data: str) -> None:
-    for line in data.split('\n')[:30]:
-        if line.strip():
-            print(f"{config.SPACE}{c.DIM}{line}{c.RESET}")
-
-
-def _render_scored(data: Dict[str, Any]) -> None:
-    score = data.get('score', 0)
-    total = data.get('total', 0)
-    pct = data.get('percentage', 0)
-    print(f"{config.SPACE}{c.BLUE}Security Score:{c.RESET} {score}/{total} ({pct:.0f}%)")
-    if pct >= 80:
-        print(f"{config.SPACE}{c.GREEN}Excellent security posture!{c.RESET}")
-    elif pct >= 50:
-        print(f"{config.SPACE}{c.YELLOW}Moderate security{c.RESET}")
     else:
-        print(f"{config.SPACE}{c.RED}Poor security - needs improvement{c.RESET}")
+        console.print(data)
+
+
+def save_result_to_file(data: Any, filename: str) -> None:
+    path = Path(filename)
+    if isinstance(data, (dict, list)):
+        path.write_text(json.dumps(data, indent=2))
+    else:
+        path.write_text(str(data))
+    console.print(f"[green]Results saved to:[/] [yellow]{filename}[/]")
+
+
+def ask_save_result(result: ServiceResult, default_name: str) -> None:
+    if not result.success or result.data is None:
+        return
+
+    try:
+        should_save = Confirm.ask("\n[bold cyan]Save results to file?[/]", default=False)
+        if not should_save:
+            return
+
+        filename = result.save_filename or default_name
+        save_result_to_file(result.data, filename)
+    except (KeyboardInterrupt, EOFError):
+        pass

@@ -1,134 +1,90 @@
-"""Registry-driven interactive CLI menu for SIGIT.
+from itertools import groupby
 
-The menu is built dynamically from the :class:`ServiceRegistry`.
-Adding a new service to ``sigit/services/`` is enough — no edits needed here.
-"""
+from rich.console import Console
+from rich.prompt import Prompt
 
-import sys
-from typing import List, Type
+from sigit.cli.display import ask_save_result, clear, print_header, print_logo, render_result
+from sigit.cli.prompt import prompt_schema
+from sigit.core.base import BaseService
+from sigit.core.registry import ServiceRegistry
 
-from ..core.base import BaseService
-from ..core.registry import ServiceRegistry
-from ..core.colors import Colors
-from ..core.config import config
-from .display import (
-    clear, LOGO, separator, print_header, input_prompt,
-    render_result, ask_save_results,
-)
-
-c = Colors()
+console = Console()
 
 
 class Menu:
-
     @staticmethod
-    def _services() -> List[Type[BaseService]]:
-        """Return ordered list of registered services."""
+    def services() -> list[type[BaseService]]:
         return ServiceRegistry.ordered()
 
     @staticmethod
     def show() -> None:
         clear()
-        print(LOGO)
-        services = Menu._services()
-        
-        from itertools import groupby
-        sorted_svcs = sorted(services, key=lambda x: x.category.value)
-        
-        print()        
-        idx = 1
-        for cat, group in groupby(sorted_svcs, key=lambda x: x.category.value):
-            # Print category header
-            print(f"{config.SPACE}{c.BLUE}● {c.RESET}{c.BOLD}{cat.upper()}{c.RESET}")
-            
-            for svc in group:
-                # Print service with nice numbering and description
-                print(f"{config.SPACE}  {c.BLUE}{idx:02d}.{c.RESET} {svc.name:<18} {c.DIM}{svc.description}{c.RESET}")
-                idx += 1
-            print() # Spacer between categories
-        
-        # Exit option
-        print(f"{config.SPACE}  {c.BLUE}{idx:02d}.{c.RESET} {'Exit Tool':<20} {c.DIM}{'Close application':<30}{c.RESET}")
-        print()
+        print_logo()
+        all_services = Menu.services()
+        sorted_services = sorted(all_services, key=lambda s: s.category.value)
 
-    @staticmethod
-    async def run() -> None:
+        idx = 1
+        for category_name, group in groupby(sorted_services, key=lambda s: s.category.value):
+            console.print(f"\n[bold blue]● {category_name.upper()}[/]")
+            for svc in group:
+                console.print(
+                    f"  [bold blue]{idx:02d}.[/] [white]{svc.name:<18}[/] [dim]{svc.description}[/]"
+                )
+                idx += 1
+
+        console.print(
+            f"\n  [bold blue]{idx:02d}.[/] [white]{'Exit Tool':<18}[/] [dim]Close application[/]\n"
+        )
+
+    @classmethod
+    async def run(cls) -> None:
         while True:
             try:
-                services = Menu._services()
-                exit_num = len(services) + 1
-                
-                cmd = input(f"{config.SPACE}{c.BLUE}┌──({c.RESET}sigit{c.BLUE})─[{c.RESET}menu{c.BLUE}]\n{config.SPACE}└─➤ {c.RESET}").strip().lower()
+                all_services = cls.services()
+                exit_choice = len(all_services) + 1
 
-                if cmd in ("exit", "quit", str(exit_num)):
-                    print(f"\n{config.SPACE}{c.BLUE}* {c.RESET}Goodbye!")
+                choice_str = Prompt.ask("\n[bold blue]sigit[/][dim]>[/]").strip().lower()
+                if choice_str in ("exit", "quit", str(exit_choice)):
+                    console.print("\n[blue]*[/] Goodbye!")
                     break
 
-                try:
-                    choice = int(cmd)
-                except ValueError:
-                    if cmd: print(f"{config.SPACE}{c.RED}* Invalid option{c.RESET}")
+                if choice_str in ("clear", "cls"):
+                    cls.show()
                     continue
 
-                if 1 <= choice <= len(services):
-                    # Find service by index (they were sorted by category in show())
-                    sorted_svcs = sorted(services, key=lambda x: x.category.value)
-                    await Menu._run_service(sorted_svcs[choice-1])
-                elif choice == exit_num:
-                    break
+                try:
+                    choice = int(choice_str)
+                except ValueError:
+                    console.print("[red]Invalid selection[/red]")
+                    continue
+
+                if 1 <= choice <= len(all_services):
+                    sorted_services = sorted(all_services, key=lambda s: s.category.value)
+                    selected_service = sorted_services[choice - 1]
+                    await cls._execute_service(selected_service)
                 else:
-                    print(f"{config.SPACE}{c.RED}* Choice out of range{c.RESET}")
+                    console.print("[red]Choice out of range[/red]")
 
             except (KeyboardInterrupt, EOFError):
-                print(f"\n\n{config.SPACE}{c.BLUE}* {c.RESET}Exiting SIGIT... Goodbye!")
-                sys.exit(0)
+                console.print("\n[blue]*[/] Exiting SIGIT...")
+                break
 
     @staticmethod
-    async def _run_service(svc_cls: Type[BaseService]) -> None:
-        """Generic handler with progress bar and interrupt support."""
+    async def _execute_service(service_cls: type[BaseService]) -> None:
         try:
-            target = input_prompt(svc_cls.input_label)
-            if not target:
-                return
+            print_header(service_cls.name)
+            params = prompt_schema(service_cls.input_schema)
+            service_instance = service_cls()
 
-            print_header(svc_cls.name.upper())
+            with console.status(f"[bold blue]Running {service_cls.name}...[/]"):
+                result = await service_instance.execute(params)
 
-            from .display import show_progress
-            import asyncio
+            console.print("")
+            render_result(result)
+            ask_save_result(result, f"result_{service_cls.name.lower()}.json")
 
-            # Create the progress bar
-            pbar = show_progress(f"Running {svc_cls.name}")
-            
-            # Execute tool in background
-            svc = svc_cls()
-            task = asyncio.create_task(svc.execute(target))
-            
-            # Update bar while waiting
-            try:
-                while not task.done():
-                    pbar.update(5)
-                    if pbar.n >= 95: pbar.n = 95 # stay at 95 until done
-                    pbar.refresh()
-                    await asyncio.sleep(0.2)
-                
-                pbar.n = 100
-                pbar.refresh()
-                pbar.close()
-                
-                result = await task
-                render_result(result)
-            except asyncio.CancelledError:
-                task.cancel()
-                pbar.close()
-                print(f"\n{config.SPACE}{c.RED}* Task cancelled{c.RESET}")
-                return
-
-            separator()
-            default_file = f"result_{svc_cls.name.lower()}.txt"
-            ask_save_results(result, default_file)
-            input(f"\n{config.SPACE}{c.DIM}Press Enter to return to menu...{c.RESET}")
+            Prompt.ask("\n[dim]Press Enter to return to menu...[/]")
             Menu.show()
-
         except KeyboardInterrupt:
-            print(f"\n\n{config.SPACE}{c.YELLOW}! {c.RESET}Operation aborted by user")
+            console.print("\n[yellow]Operation aborted by user[/yellow]")
             Menu.show()
