@@ -1,10 +1,4 @@
-import asyncio
-
-from sigit.cli.menu import Menu
+from sigit.__main__ import entrypoint
 
 if __name__ == "__main__":
-    try:
-        Menu.show()
-        asyncio.run(Menu.run())
-    except KeyboardInterrupt:
-        print("\nExiting...")
+    entrypoint()
