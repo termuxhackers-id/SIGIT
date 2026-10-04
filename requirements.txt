@@ -1,5 +1,0 @@
-googlesearch-python
-email-validator
-asyncio
-aiohttp
-requests
