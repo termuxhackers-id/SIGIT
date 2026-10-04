@@ -1,0 +1,254 @@
+<svg viewBox="0 0 960 434" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SIGIT Terminal Multi-Tool Demo">
+  <title>SIGIT — Terminal Interface</title>
+  <desc>Realistic terminal session demonstrating SIGIT reconnaissance across 3 core tools.</desc>
+  <defs>
+    <style>
+      :root {
+        --win-bg: #0d1117;
+        --win-border: #30363d;
+        --title-bg: #161b22;
+        --title-border: #21262d;
+        --title-text: #8b949e;
+        --tab-active-bg: #21262d;
+        --tab-inactive-text: #6e7681;
+        --prompt-user: #7ee787;
+        --prompt-path: #79c0ff;
+        --cmd-text: #f0f6fc;
+        --tbl-head: #58a6ff;
+        --tbl-border: #30363d;
+        --tbl-text: #e6edf3;
+        --tbl-cat: #8b949e;
+        --tbl-url: #79c0ff;
+        --tbl-status: #3fb950;
+        --kv-key: #58a6ff;
+        --kv-val: #e6edf3;
+        --text-dim: #8b949e;
+        --cursor: #79c0ff;
+      }
+      @media (prefers-color-scheme: light) {
+        :root {
+          --win-bg: #ffffff;
+          --win-border: #d0d7de;
+          --title-bg: #f6f8fa;
+          --title-border: #d0d7de;
+          --title-text: #57606a;
+          --tab-active-bg: #ffffff;
+          --tab-inactive-text: #8c959f;
+          --prompt-user: #1a7f37;
+          --prompt-path: #0969da;
+          --cmd-text: #1f2328;
+          --tbl-head: #0969da;
+          --tbl-border: #d0d7de;
+          --tbl-text: #1f2328;
+          --tbl-cat: #57606a;
+          --tbl-url: #0969da;
+          --tbl-status: #1a7f37;
+          --kv-key: #0969da;
+          --kv-val: #1f2328;
+          --text-dim: #57606a;
+          --cursor: #0969da;
+        }
+      }
+      .win-bg { fill: var(--win-bg); }
+      .win-border { stroke: var(--win-border); }
+      .title-bg { fill: var(--title-bg); stroke: var(--title-border); }
+      .title-text { fill: var(--title-text); }
+      .prompt-user { fill: var(--prompt-user); font-weight: 700; }
+      .prompt-path { fill: var(--prompt-path); font-weight: 700; }
+      .cmd-text { fill: var(--cmd-text); font-weight: 600; }
+      .tbl-head { fill: var(--tbl-head); font-weight: 700; }
+      .tbl-border { stroke: var(--tbl-border); }
+      .tbl-text { fill: var(--tbl-text); }
+      .tbl-cat { fill: var(--tbl-cat); }
+      .tbl-url { fill: var(--tbl-url); }
+      .tbl-status { fill: var(--tbl-status); font-weight: 700; }
+      .kv-key { fill: var(--kv-key); font-weight: 700; }
+      .kv-val { fill: var(--kv-val); }
+      .text-dim { fill: var(--text-dim); }
+      .cursor { fill: var(--cursor); }
+      .font-mono { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, Menlo, Monaco, monospace; }
+    </style>
+    <filter id="winShadow" x="-2%" y="-2%" width="104%" height="106%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <rect x="12" y="12" width="936" height="410" rx="10" class="win-bg win-border" stroke-width="1.2" filter="url(#winShadow)"/>
+  <path d="M 12 22 A 10 10 0 0 1 22 12 L 938 12 A 10 10 0 0 1 948 22 L 948 46 L 12 46 Z" class="title-bg" stroke-width="1"/>
+
+  <!-- macOS Window Controls -->
+  <circle cx="32" cy="29" r="5" fill="#ff5f56" stroke="#e0443e" stroke-width="0.5"/>
+  <circle cx="48" cy="29" r="5" fill="#ffbd2e" stroke="#dea123" stroke-width="0.5"/>
+  <circle cx="64" cy="29" r="5" fill="#27c93f" stroke="#1aab29" stroke-width="0.5"/>
+
+  <!-- Titlebar Tabs (2 Tools) -->
+  <g class="font-mono" font-size="11">
+    <!-- Tab 1: email_recon -->
+    <rect x="120" y="18" width="140" height="24" rx="5" fill="var(--tab-active-bg)" opacity="1">
+      <animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;0.48;0.50;0.98;1" dur="10s" repeatCount="indefinite"/>
+    </rect>
+    <text x="190" y="34" text-anchor="middle" font-weight="600" fill="var(--cmd-text)">
+      <animate attributeName="fill" values="var(--cmd-text);var(--cmd-text);var(--tab-inactive-text);var(--tab-inactive-text);var(--cmd-text)" keyTimes="0;0.48;0.50;0.98;1" dur="10s" repeatCount="indefinite"/>
+      1. email_recon
+    </text>
+
+    <!-- Tab 2: ip_location -->
+    <rect x="268" y="18" width="140" height="24" rx="5" fill="var(--tab-active-bg)" opacity="0">
+      <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.48;0.50;0.98;1" dur="10s" repeatCount="indefinite"/>
+    </rect>
+    <text x="338" y="34" text-anchor="middle" font-weight="600" fill="var(--tab-inactive-text)">
+      <animate attributeName="fill" values="var(--tab-inactive-text);var(--tab-inactive-text);var(--cmd-text);var(--cmd-text);var(--tab-inactive-text)" keyTimes="0;0.48;0.50;0.98;1" dur="10s" repeatCount="indefinite"/>
+      2. ip_location
+    </text>
+  </g>
+
+  <!-- Titlebar Right Meta -->
+  <text x="928" y="33" text-anchor="end" class="font-mono title-text" font-size="11">sigit v0.2.1 · bash</text>
+
+  <!-- SCREEN 1: email_recon -->
+  <g opacity="1">
+    <animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;0.48;0.50;0.98;1" dur="10s" repeatCount="indefinite"/>
+    <!-- Command -->
+    <g class="font-mono" font-size="12.5" transform="translate(44, 76)">
+      <text y="0">
+        <tspan class="prompt-user">termux@sigit</tspan><tspan class="text-dim">:</tspan><tspan class="prompt-path">~</tspan><tspan class="text-dim">$ </tspan><tspan class="cmd-text">sigit email_recon --email target@example.com</tspan>
+      </text>
+    </g>
+
+    <!-- Symmetric Table Grid -->
+    <g class="tbl-border" stroke-width="1">
+      <line x1="44" y1="96" x2="916" y2="96"/>
+      <line x1="44" y1="120" x2="916" y2="120"/>
+      <line x1="44" y1="304" x2="916" y2="304"/>
+      <line x1="44" y1="96" x2="44" y2="304"/>
+      <line x1="184" y1="96" x2="184" y2="304"/>
+      <line x1="334" y1="96" x2="334" y2="304"/>
+      <line x1="796" y1="96" x2="796" y2="304"/>
+      <line x1="916" y1="96" x2="916" y2="304"/>
+    </g>
+
+    <!-- Table Content -->
+    <g class="font-mono" font-size="12">
+      <g class="tbl-head">
+        <text x="54" y="113">Platform</text>
+        <text x="194" y="113">Category</text>
+        <text x="344" y="113">Url</text>
+        <text x="806" y="113">Status</text>
+      </g>
+      <g transform="translate(0, 139)">
+        <text x="54" y="0" class="tbl-text">Figma</text>
+        <text x="194" y="0" class="tbl-cat">Creator</text>
+        <text x="344" y="0" class="tbl-url">https://figma.com</text>
+        <text x="806" y="0" class="tbl-status">Registered</text>
+      </g>
+      <g transform="translate(0, 162)">
+        <text x="54" y="0" class="tbl-text">Babbel</text>
+        <text x="194" y="0" class="tbl-cat">Learning</text>
+        <text x="344" y="0" class="tbl-url">https://babbel.com</text>
+        <text x="806" y="0" class="tbl-status">Registered</text>
+      </g>
+      <g transform="translate(0, 185)">
+        <text x="54" y="0" class="tbl-text">Office365</text>
+        <text x="194" y="0" class="tbl-cat">Productivity</text>
+        <text x="344" y="0" class="tbl-url">https://office.com</text>
+        <text x="806" y="0" class="tbl-status">Registered</text>
+      </g>
+      <g transform="translate(0, 208)">
+        <text x="54" y="0" class="tbl-text">Instagram</text>
+        <text x="194" y="0" class="tbl-cat">Social</text>
+        <text x="344" y="0" class="tbl-url">https://instagram.com</text>
+        <text x="806" y="0" class="tbl-status">Registered</text>
+      </g>
+      <g transform="translate(0, 231)">
+        <text x="54" y="0" class="tbl-text">Threads</text>
+        <text x="194" y="0" class="tbl-cat">Social</text>
+        <text x="344" y="0" class="tbl-url">https://threads.net</text>
+        <text x="806" y="0" class="tbl-status">Registered</text>
+      </g>
+      <g transform="translate(0, 254)">
+        <text x="54" y="0" class="tbl-text">Discord</text>
+        <text x="194" y="0" class="tbl-cat">Social</text>
+        <text x="344" y="0" class="tbl-url">https://discord.com</text>
+        <text x="806" y="0" class="tbl-status">Registered</text>
+      </g>
+      <g transform="translate(0, 277)">
+        <text x="54" y="0" class="tbl-text">Spotify</text>
+        <text x="194" y="0" class="tbl-cat">Music</text>
+        <text x="344" y="0" class="tbl-url">https://spotify.com</text>
+        <text x="806" y="0" class="tbl-status">Registered</text>
+      </g>
+      <g transform="translate(0, 300)">
+        <text x="54" y="0" class="tbl-text">Twitter</text>
+        <text x="194" y="0" class="tbl-cat">Social</text>
+        <text x="344" y="0" class="tbl-url">https://twitter.com</text>
+        <text x="806" y="0" class="tbl-status">Registered</text>
+      </g>
+    </g>
+
+    <!-- Summary -->
+    <g class="font-mono" font-size="12.5" transform="translate(44, 332)">
+      <text y="0"><tspan fill="#58a6ff" opacity="0.85">Total:</tspan> <tspan fill="#f59e0b" font-weight="700">8</tspan> <tspan class="text-dim">items</tspan></text>
+    </g>
+  </g>
+
+  <!-- SCREEN 2: ip_location -->
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.48;0.50;0.98;1" dur="10s" repeatCount="indefinite"/>
+    <!-- Command -->
+    <g class="font-mono" font-size="12.5" transform="translate(44, 76)">
+      <text y="0">
+        <tspan class="prompt-user">termux@sigit</tspan><tspan class="text-dim">:</tspan><tspan class="prompt-path">~</tspan><tspan class="text-dim">$ </tspan><tspan class="cmd-text">sigit ip_location --ip 8.8.8.8</tspan>
+      </text>
+    </g>
+
+    <!-- Key-Value Output (Matches SIGIT's Rich Key-Value Boxless Format) -->
+    <g class="font-mono" font-size="12">
+      <g transform="translate(44, 114)">
+        <text x="0" y="0" class="kv-key">Ip Address</text>
+        <text x="240" y="0" class="kv-val">8.8.8.8</text>
+      </g>
+      <g transform="translate(44, 138)">
+        <text x="0" y="0" class="kv-key">Reverse Dns Ptr</text>
+        <text x="240" y="0" class="tbl-url">dns.google</text>
+      </g>
+      <g transform="translate(44, 162)">
+        <text x="0" y="0" class="kv-key">City</text>
+        <text x="240" y="0" class="kv-val">Mountain View</text>
+      </g>
+      <g transform="translate(44, 186)">
+        <text x="0" y="0" class="kv-key">Region</text>
+        <text x="240" y="0" class="kv-val">California</text>
+      </g>
+      <g transform="translate(44, 210)">
+        <text x="0" y="0" class="kv-key">Country</text>
+        <text x="240" y="0" class="kv-val">United States (US)</text>
+      </g>
+      <g transform="translate(44, 234)">
+        <text x="0" y="0" class="kv-key">Coordinates</text>
+        <text x="240" y="0" class="kv-val">37.4056, -122.0775</text>
+      </g>
+      <g transform="translate(44, 258)">
+        <text x="0" y="0" class="kv-key">Organization / Asn</text>
+        <text x="240" y="0" class="kv-val">AS15169 Google LLC</text>
+      </g>
+      <g transform="translate(44, 282)">
+        <text x="0" y="0" class="kv-key">Timezone</text>
+        <text x="240" y="0" class="kv-val">America/Los_Angeles</text>
+      </g>
+      <g transform="translate(44, 306)">
+        <text x="0" y="0" class="kv-key">Postal Code</text>
+        <text x="240" y="0" class="kv-val">94043</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Universal Active Shell Prompt & Blinking Cursor at bottom of all screens -->
+  <g class="font-mono" font-size="12.5" transform="translate(44, 368)">
+    <text y="0">
+      <tspan class="prompt-user">termux@sigit</tspan><tspan class="text-dim">:</tspan><tspan class="prompt-path">~</tspan><tspan class="text-dim">$ </tspan>
+    </text>
+    <rect x="116" y="-12" width="8" height="15" rx="1" class="cursor">
+      <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+</svg>

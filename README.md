@@ -1,110 +1,205 @@
-<p>
+<div align="center">
+  <img src="./sigit.svg" alt="SIGIT Banner" width="100%" />
+</div>
+
+<p align="center">
   <img src="https://img.shields.io/github/last-commit/termuxhackers-id/SIGIT?style=for-the-badge&logo=git&logoColor=white&color=0080ff" alt="last-commit">
   <img src="https://img.shields.io/github/languages/top/termuxhackers-id/SIGIT?style=for-the-badge&color=0080ff" alt="repo-top-language">
-  <img src="https://img.shields.io/badge/Python-3.12%2B-blue?style=for-the-badge&logo=python&logoColor=white&color=0080ff" alt="Python">
+  <img src="https://img.shields.io/badge/Python-3.11%2B-blue?style=for-the-badge&logo=python&logoColor=white&color=0080ff" alt="Python">
 </p>
-
-[![asciicast](https://asciinema.org/a/1039188.svg)](https://asciinema.org/a/1039188)
 
 ---
 
 ## Overview
 
-**SIGIT** is a modern, registry-driven OSINT toolkit designed for speed, scalability, and ease of contribution. Built with a modular architecture, it allows security researchers and developers to perform reconnaissance without the overhead of complex configurations.
+SIGIT (Simple Information Gathering Toolkit) is a modular, high-performance open-source intelligence (OSINT) framework written in modern Python. It provides automated reconnaissance capabilities across network infrastructure, domain metadata, security configurations, digital identities, and social profiles.
 
-### What's New in v2.0.0?
-- **Registry-Driven Core**: Automatic tool discovery. Adding a new tool is as simple as creating a `.py` file.
-- **Minimalist UI**: Professional CLI interface with grouped categories and modern prompts.
-- **Progress Tracking**: Real-time `tqdm` processing bars for all tools.
-- **Interactive Workflow**: "Ask to Save" results (y/n) and clean CTRL+C handling.
-- **Scalable Architecture**: Type-hinted `BaseService` contract for predictable development.
+The architecture is built around schema-validated services, recursive auto-discovery, stealth asynchronous HTTP transport via browser TLS impersonation, and dual execution modes (scriptable CLI and interactive terminal interface).
 
 ---
 
-## Features
+## Key Capabilities
 
-- **14+ Specialized Tools**: Covering Network, Domain, Email, Security, and Social reconnaissance.
-- **Asynchronous Engine**: Powered by `asyncio` and `aiohttp` for non-blocking execution.
-- **Clean Output**: Data is filtered and formatted for human readability (no more raw JSON dumps).
-- **Registry System**: Automatic discovery of modules in `sigit/services/`.
-- **Global Indy**: Balanced minimalist design with secondary color highlighting.
+- **Stealth Transport**: Asynchronous network I/O powered by `curl_cffi` with browser fingerprint impersonation (JA3/JA4) and bounded concurrency controls.
+- **Typed Schema Validation**: Parameter contracts and input validation powered by Pydantic models for every service.
+- **Dual Execution Modes**: Fully scriptable command-line interface with dynamic argument parsing (`argparse`), alongside a rich interactive terminal menu.
+- **Categorized Architecture**: Modular service organization partitioned by domain responsibilities for clean horizontal scalability.
+- **Universal Output Rendering**: Format-agnostic presentation supporting structured tables, key-value panels, lists, raw text, and automated JSON export.
 
 ---
 
-## Project Structure
+## Architecture and Directory Layout
 
 ```text
-└── sigit/
-    ├── sigit/
-    │   ├── core/          → Base class, Registry, Config, Colors
-    │   │   ├── base.py    → Service contract (ABC)
-    │   │   ├── registry.py → Auto-discovery engine
-    │   │   └── client.py  → Async HTTP client
-    │   ├── services/      → 14+ Modular tools (Add yours here!)
-    │   │   ├── _template.py → Contributor template
-    │   │   └── ...
-    │   └── cli/           → UI components
-    │       ├── menu.py    → Grouped menu logic
-    │       └── display.py → Rendering & Progress bars
-    ├── run.py             → Entry point
-    └── pyproject.toml     → uv-ready dependencies
+sigit/
+├── core/
+│   ├── base.py                 # BaseService contract, Category, RenderType, ServiceResult
+│   ├── config.py               # Central environment settings (pydantic-settings)
+│   ├── http.py                 # Shared curl_cffi AsyncSession with concurrency control
+│   └── registry.py             # Recursive package auto-discovery engine
+├── cli/
+│   ├── display.py              # Rich table, panel, and file output rendering
+│   ├── menu.py                 # Interactive terminal navigation and execution loop
+│   ├── parser.py               # Dynamic argparse generator derived from Pydantic schemas
+│   └── prompt.py               # Schema-driven interactive prompt collector
+└── services/                   # Category-partitioned and isolated tool packages
+    ├── domain/                 # dns_recon/, subdomain_scanner/, whois/
+    ├── email/                  # email_recon/, mail_finder/
+    ├── network/                # ip_location/, port_scanner/, reverse_ip/
+    ├── recon/                  # phone_info/, tech_detector/
+    ├── security/               # breach_checker/, header_analyzer/, ssl_checker/
+    └── social/                 # github_recon/, user_recon/
 ```
+
+---
+
+## Service Catalog
+
+| Category | Service Name | Command Identifier | Description |
+| :--- | :--- | :--- | :--- |
+| **Domain** | `DNSRecon` | `dns_recon` | Resolves A, MX, NS, and TXT DNS records via Google DNS over HTTPS. |
+| **Domain** | `SubdomainScan` | `subdomain_scan` | Concurrent DNS and HTTP enumeration for common subdomain prefixes. |
+| **Domain** | `WHOISLookup` | `whois_lookup` | Retrieves full domain registration data via system whois utility. |
+| **Email** | `EmailRecon` | `email_recon` | Checks email registration status across 100+ platforms with multi-factor validation. |
+| **Email** | `MailFinder` | `mail_finder` | Audits known email registrations or generates permutations to probe targets. |
+| **Network** | `IPLocation` | `ip_location` | Queries geolocation, Autonomous System (ASN), ISP, and coordinates. |
+| **Network** | `PortScanner` | `port_scanner` | Non-blocking asynchronous TCP port scanner over configurable ports. |
+| **Network** | `ReverseIP` | `reverse_ip` | Discovers virtual hosts and domains collocated on the same IP. |
+| **Recon** | `PhoneInfo` | `phone_info` | Validates international phone numbering formats, country, and carrier. |
+| **Recon** | `TechDetector` | `tech_detector` | Inspects HTTP response headers and signatures for CMS, frameworks, and CDNs. |
+| **Security** | `BreachChecker` | `breach_checker` | Verifies account exposure against indexed public data breaches. |
+| **Security** | `HeaderAnalyzer` | `header_analyzer` | Audits HTTP response security policies (HSTS, CSP, X-Frame-Options). |
+| **Security** | `SSLChecker` | `ssl_checker` | Extracts X.509 certificate metadata, validity windows, and issuers. |
+| **Social** | `GitHubRecon` | `git_hub_recon` | Collects public user metrics and latest repository activities. |
+| **Social** | `UserRecon` | `user_recon` | Cross-checks username availability across 105+ platforms with anti-bot bypass. |
 
 ---
 
 ## Installation
 
-### Using uv (Recommended)
-Fastest installation with automatic environment management:
+### Prerequisites
+- Python 3.11 or higher
+- `uv` (recommended package and project manager) or standard `pip`
+
+### Using uv
 ```bash
-git clone https://github.com/termuxhackers-id/SIGIT
+git clone https://github.com/termuxhackers-id/SIGIT.git
 cd SIGIT
 uv sync
-uv run python run.py
 ```
-
-### Using pip
+This automatically registers the `sigit` executable into the environment. You can also install it globally via:
 ```bash
+uv tool install .
+# or
 pip install .
-python run.py
 ```
 
 ---
 
 ## Usage
 
-Run the toolkit:
+### 1. Interactive Terminal Mode
+To start the guided terminal menu:
 ```bash
-python run.py
+sigit
+# or with uv
+uv run sigit
 ```
 
-**Professional Workflow:**
-1. Select a tool from the grouped categories.
-2. Enter the target (Domain, IP, or Username).
-3. Watch the real-time progress bar.
-4. Review the formatted results.
-5. Choose to save (`y/n`) to a file.
+### 2. Headless CLI Mode (Scriptable)
+Every service exposes a dedicated subcommand generated automatically from its parameter schema.
+
+#### Global Help
+```bash
+sigit --help
+```
+
+#### Service Help and Parameter Inspection
+```bash
+sigit port_scanner --help
+sigit email_recon --help
+sigit user_recon --help
+```
+
+#### Execution Examples
+```bash
+# Geolocation lookup for IP address
+sigit ip_location --ip 8.8.8.8
+
+# Email reconnaissance across 140+ platforms
+sigit email_recon --email target@example.com
+
+# Social username reconnaissance across 105+ platforms
+sigit user_recon --username targetuser -o user_profiles.json
+
+# DNS record enumeration with direct JSON export
+sigit dns_recon --domain google.com -o results_dns.json
+
+# Asynchronous TCP port scanning
+sigit port_scanner --target 127.0.0.1 --ports 22,80,443 --timeout 1.0
+
+# Inspect security headers
+sigit header_analyzer --url https://example.com
+```
 
 ---
 
-## Contributing
+## Configuration
 
-We love contributions! SIGIT is designed to be the easiest toolkit to extend.
+Configuration variables can be passed via environment variables or a `.env` file located in the project root:
 
-### Adding a New Tool in 3 Steps:
-1. **Copy** `sigit/services/_template.py` to `sigit/services/my_tool.py`.
-2. **Implement** the `execute()` method.
-3. **Run** SIGIT. Your tool will automatically appear in the menu!
+```bash
+# Concurrency and timeout controls
+SIGIT_TIMEOUT=15
+SIGIT_MAX_CONCURRENCY=25
+SIGIT_IMPERSONATE=chrome124
+SIGIT_PROXY=http://127.0.0.1:8080
 
-Refer to our [Contributing Guidelines](CONTRIBUTING.md) for more details.
+# External API credentials (optional)
+SIGIT_VERIPHONE_KEY=your_api_key_here
+SIGIT_ISITAREALEMAIL_KEY=your_api_key_here
+```
+
+---
+
+## Adding a New Service
+
+1. Create a dedicated tool directory under the appropriate category (e.g., `sigit/services/network/my_scanner/`).
+
+2. Create `sigit/services/network/my_scanner/service.py`:
+
+```python
+from pydantic import BaseModel, Field
+from sigit.core.base import BaseService, Category, RenderType, ServiceResult
+
+
+class ScannerInput(BaseModel):
+    target: str = Field(description="Target host")
+
+
+class MyScanner(BaseService):
+    name = "MyScanner"
+    description = "Custom network scanner implementation"
+    category = Category.NETWORK
+    input_schema = ScannerInput
+
+    async def execute(self, params: ScannerInput) -> ServiceResult:
+        data = {"host": params.target, "status": "active"}
+        return ServiceResult.ok(data, render_type=RenderType.KEY_VALUE)
+```
+
+3. Expose the service in `sigit/services/network/my_scanner/__init__.py`:
+
+```python
+from sigit.services.network.my_scanner.service import MyScanner, ScannerInput
+
+__all__ = ["MyScanner", "ScannerInput"]
+```
+
+4. The service is automatically indexed by `ServiceRegistry` and immediately accessible in both the interactive menu and the CLI subcommand interface.
 
 ---
 
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
-<div align="center">
-  <sub>Made with ❤️ by <a href="https://github.com/termuxhackers-id">TermuxHackers.id</a></sub><br>
-  <sub><i>Simple. Modular. Powerful.</i></sub>
-</div>
